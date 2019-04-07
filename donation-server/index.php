@@ -1,3 +1,43 @@
+<?php
+if (isset($_POST['submit'])) {
+	$to = "rahmat.rama98@gmail.com";
+	$from = $_POST['email'];
+	$name = $_POST['name'];
+	$location = $_POST['location'];
+
+	$noHp = $_POST['phone'];
+	$alamat = $_POST['address'];
+	$jenis = implode(", ", $_POST['service']);
+	$merk = implode(", ", $_POST['type-product']);
+
+	$subject = "Donasi Taki Jelek";
+	$subject2 = "Informasi Donasi";
+
+	$message = "Nama : " . $name . "\n" .
+		"Nomor Handphone : " . $noHp . "\n" .
+		"Email : " . $from . "\n" .
+		"Alamat : " . $alamat . "\n" .
+		"Pesan : " . $_POST['message'] .  "\n" .
+		"Jenis : " . $jenis .  "\n" .
+		"Merek : " . $merk .
+		"Lokasi : https://www.google.com/maps/search/?api=1&query=". $location;
+
+
+	$message2 = "Terima Kasih, Informasi Mengenai Donasi Anda Sudah Kami Terima" . "\n" . $message;
+
+	$headers = "From:" . $from;
+	$headers2 = "From:" . $to;
+	mail($to, $subject, $message, $headers);
+	mail($from, $subject2, $message2, $headers2); // sends a copy of the message to the sender
+
+	// echo $message;
+	// echo "Mail Sent. Thank you " . $name . ", we will contact you shortly.";
+	// You can also use header('Location: thank_you.php'); to redirect to another page.
+	header('location: sent.html');
+	}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,8 +75,12 @@
 	<div class="container-contact100">
 		<div class="wrap-contact100">
 			<form class="contact100-form validate-form" action="" method="post">
-				<span class="contact100-form-title">
+				<span class="contact100-form-title" style="padding-bottom: 5px;">
 					Donasikan Fast-Shion Kamu
+				</span>
+
+				<span class="contact100-form-text" style="padding-bottom: 59px; text-align: center;">
+					donasi akan kami berikan kepada orang yang membutuhkan dan kurang mampu
 				</span>
 
 				<div class="wrap-input100 validate-input bg1" data-validate="Tolong Ketik Nama Kamu">
@@ -58,6 +102,25 @@
 					<span class="label-input100">Alamat Lengkap *</span>
 					<input class="input100" type="text" name="address" placeholder="Masukkan Alamat Lengkap Kamu">
 				</div>
+
+				<div class="wrap-input100 bg1 location" style="margin-bottom: 5px;">
+					<span class="label-input100">Lokasi *</span>
+					<input class="input100" type="text" id="location" name="location" placeholder="">
+				</div>
+
+				<button class="btn-loc" onclick="getLocation(); return false;" role="button">
+					<u> Klik di sini</u> untuk generate lokasi kamu..
+				</button>
+
+				<!-- <div class="container-contact100-form-btn btn-loc">
+					<button onclick="getLocation()" class="contact100-form-btn" type="submit" name="submit"
+						value="Submit">
+						<span>
+							Submit
+							<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+						</span>
+					</button>
+				</div> -->
 
 				<div class="wrap-input100 input100-select bg1">
 					<span class="label-input100">Jenis Barang *</span>
@@ -245,46 +308,24 @@
 
 		gtag('config', 'UA-23581568-13');
 	</script>
+	<script>
+		function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(redirectToPosition);
+			} else {
+				window.alert("Geolocation is not supported by this browser.");
+			}
+		}
+
+		function redirectToPosition(position) {
+			var location = position.coords.latitude + "," + position.coords.longitude;
+			document.getElementById("location").value = location;
+		}
+
+	</script>
 
 
 </body>
 
 </html>
 
-<?php
-if (isset($_POST['submit'])) {
-	$to = "rahmat.rama98@gmail.com";
-	$from = $_POST['email'];
-	$name = $_POST['name'];
-
-	$noHp = $_POST['phone'];
-	$alamat = $_POST['address'];
-	$jenis = implode($_POST['service']);
-	$merk = implode($_POST['type-product']);
-
-	$subject = "Donasi Taki Jelek";
-	$subject2 = "Informasi Donasi";
-
-
-
-	$message = "Nama : " . $name . "\n".
-	"Nomor Handphone : " . $noHp . "\n".
-	"Email : " . $from . "\n" .
-	"Alamat : " . $alamat . "\n" .
-	"Pesan : " . $_POST['message'].  "\n".
-	"Jenis : " . $jenis .  "\n".
-	"Merek : " . $merk 
-	;
-
-	// echo $message;
-	// $message = $name . " wrote the following:" . "\n" . $_POST['message'];
-	$message2 = "Terima Kasih, Informasi Mengenai Donasi Anda Sudah Kami Terima";
-
-	$headers = "From:" . $from;
-	$headers2 = "From:" . $to;
-	mail($to, $subject, $message, $headers);
-	mail($from, $subject2, $message2, $headers2); // sends a copy of the message to the sender
-	echo "Mail Sent. Thank you " . $name . ", we will contact you shortly.";
-	// You can also use header('Location: thank_you.php'); to redirect to another page.
-}
-?>
